@@ -143,9 +143,17 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/updateProduct", method = RequestMethod.POST)
-	public String updateProduct(@ModelAttribute("product") Product product ) throws Exception{
+	public String updateProduct(@ModelAttribute("product") Product product, MultipartFile file ) throws Exception{
 		
 		System.out.println("/updateProduct");
+		
+		if(!file.isEmpty()) {
+			String savedName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+			
+			FileCopyUtils.copy(file.getBytes(), new File(uploadPath, savedName));
+					
+			product.setFileName(savedName);
+		}
 		
 		productService.updateProduct(product);
 		

@@ -8,12 +8,35 @@
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
+<!-- CDN(Content Delivery Network) 호스트 사용 -->
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+
 	// 검색 / page 두가지 경우 모두 Form 전송을 위해 JavaScript 이용
-	function fncGetProductList(currentPage){
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
+	function fncGetList(currentPage){
+		$("#currentPage").val(currentPage);
+		$("form").attr("method", "POST").attr("action", "/product/listProduct").submit();
 	}
+	
+	$(function(){
+		
+		$("td.ct_btn01:contains('검색')").on("click", function(){
+			fncGetList(1);
+		});
+		
+		$(".ct_list_pop td:nth-child(3)").on("click", function(){
+			
+			var pageLink = ($("input[name='menu']").val() == "manage") ? "/product/updateProduct" : "/product/getProduct" ;	
+			console.log($(this).attr("value"));
+			
+			self.location = pageLink + "?prodNo=" + $(this).attr("value") + "&menu=" + $("input[name='menu']").val();
+		});
+		
+		$(".ct_list_pop td:nth-child(3)").css("color" , "blue");
+		
+		$(".ct_list_pop:nth-child(4n+6)").css("background-color" , "whitesmoke");
+		
+	});
 
 </script>
 </head>
@@ -22,7 +45,9 @@
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="/product/listProduct?menu=${ param.menu }" method="post">
+<form name="detailForm">
+
+<input type="hidden" name="menu" value="${ menu }" />
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -64,7 +89,8 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetProductList('1');">검색</a>
+						<!--  <a href="javascript:fncGetProductList('1');">검색</a> -->
+						검색
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
@@ -97,13 +123,17 @@
 	<c:set var="i" value="0" />
 	<c:forEach var="product"  items="${ list }">
 		<c:set var="i" value="${ i+1 }" />
-		<tr class="ct_list_pop">
+		<tr class="ct_list_pop">			
 			<td align="center">${ i }</td>
 			<td></td>
-			<td align="left">
+			<td align="left" value="${ product.prodNo }">
+			<!-- 
 				<a href="${ menu == 'manage' ? '/product/updateProduct' : '/product/getProduct'}?prodNo=${  product.prodNo }&menu=${ menu }">
 					${ product.prodName }
 				</a>
+			 -->
+			 	<!-- <input type="hidden" name="prodNo" value="${ product.prodNo }"> -->			 	
+				${ product.prodName }
 			</td>
 			<td></td>
 			<td align="left">${ product.price }</td>
@@ -131,24 +161,8 @@
 	<tr>
 		<td align="center">
 			<input type="hidden" id="currentPage" name="currentPage" value=""/>
-			 
-			<c:if test="${ resultPage.currentPage <= resultPage.pageUnit }">
-				◀ 이전
-			</c:if>
-			<c:if test="${ resultPage.currentPage > resultPage.pageUnit }">
-					<a href="javascript:fncGetProductList('${ resultPage.currentPage-1}')">◀ 이전</a>
-			</c:if>
-			
-			<c:forEach var="i"  begin="${resultPage.beginUnitPage}" end="${resultPage.endUnitPage}" step="1">
-				<a href="javascript:fncGetProductList('${ i }');">${ i }</a>
-			</c:forEach>
-			
-			<c:if test="${ resultPage.endUnitPage >= resultPage.maxPage }">
-					이후 ▶
-			</c:if>
-			<c:if test="${ resultPage.endUnitPage < resultPage.maxPage }">
-					<a href="javascript:fncGetProductList('${resultPage.endUnitPage+1}')">이후 ▶</a>
-			</c:if>	
+	
+			<jsp:include page="../common/pageNavigator.jsp"/>
     	</td>
 	</tr>
 </table>
