@@ -8,19 +8,28 @@
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
+<!-- CDN(Content Delivery Network) 호스트 사용 -->
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+	
 	function fncGetList(currentPage) {
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
+		$("#currentPage").val(currentPage);
+		$("form").attr("method", "POST").attr("action", "/purchase/listPurchase").submit();
 	}
+	
+	$(function(){
+		
+	});
+	
 </script>
+
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/purchase/listPurchase" method="post">
+<form name="detailForm">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
