@@ -8,11 +8,44 @@
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
+<!-- CDN(Content Delivery Network) 호스트 사용 -->
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+	
 	function fncGetList(currentPage) {
-		document.getElementById("currentPage").value = currentPage;
-		document.detailForm.submit();
+		$("#currentPage").val(currentPage);
+		$("form").attr("method", "POST").attr("action", "/purchase/listSale").submit();
 	}
+	
+	$(function(){
+		
+		$(".ct_list_pop td:nth-child(3)").click(function(){
+			// /purchase/getPurchase?tranNo=${ purchase.tranNo }			
+			console.log("판매번호 클릭 : " + $(this).text().trim());
+			self.location = "/purchase/getPurchase?tranNo=" + $(this).text().trim();
+		});
+				
+		$(".ct_list_pop td:nth-child(5)").click(function(){
+			// /product/getProduct?prodNo=${ purchase.purchaseProd.prodNo }			
+			console.log("상품번호 클릭 : " + $(this).text().trim());
+			self.location = "/product/getProduct?prodNo=" + $(this).text().trim();
+		});
+		
+		$(".ct_list_pop td:nth-child(11) span").click(function(){
+			// /purchase/updateTranCode?tranNo=${ purchase.tranNo }&tranCode=003&menu=manage			
+			console.log("배송하기 클릭 : " + $(this).attr("value"));
+			self.location = "/purchase/updateTranCode?tranNo=" + $(this).attr("value") + "&tranCode=003&menu=manage";
+		});
+		
+		$(".ct_list_pop td:nth-child(3)").css("color", "#d31579");
+		$(".ct_list_pop td:nth-child(5)").css("color", "#d31566");
+		
+		$(".ct_list_pop td:nth-child(11) span").css({
+			"margin-left" : "50px",
+			"font-weight" : "bold"
+		});
+	});
+	
 </script>
 </head>
 
@@ -20,7 +53,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/purchase/listPurchase" method="post">
+<form name="detailForm">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -41,11 +74,13 @@
 		<td colspan="11">전체 ${ resultPage.totalCount } 건수, 현재 ${ resultPage.currentPage } 페이지</td>
 	</tr>
 	<tr>
-		<td class="ct_list_b" width="100">No</td>
+		<td class="ct_list_b" width="30">No</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">상품번호</td>
+		<td class="ct_list_b" width="100">판매번호</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">구매자</td>
+		<td class="ct_list_b" width="100">상품번호</td>
+		<td class="ct_line02"></td>
+		<td class="ct_list_b" width="100">구매자</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b">구매 날짜</td>
 		<td class="ct_line02"></td>
@@ -60,21 +95,26 @@
 	<c:forEach var="purchase"  items="${ list }">
 		<c:set var="i" value="${ i+1 }" />	
 		<tr class="ct_list_pop">
+			<td align="center">${ i }</td>
+			<td></td>
 			<td align="center">
-				<a href="/purchase/getPurchase?tranNo=${ purchase.tranNo }">${ i }</a>
+				<!-- <a href="/purchase/getPurchase?tranNo=${ purchase.tranNo }">${ i }</a>  -->
+				${ purchase.tranNo }
 			</td>
 			<td></td>
-			<td align="left">
-				<a href="/product/getProduct?prodNo=${ purchase.purchaseProd.prodNo }">${ purchase.purchaseProd.prodNo }</a>
+			<td align="center">
+			<!-- <a href="/product/getProduct?prodNo=${ purchase.purchaseProd.prodNo }">${ purchase.purchaseProd.prodNo }</a> -->
+				${ purchase.purchaseProd.prodNo }
 			</td>
 			<td></td>
-			<td align="left">${ purchase.buyer.userId }</td>
+			<td align="center">${ purchase.buyer.userId }</td>
 			<td></td>
-			<td align="left">${ purchase.orderDate }</td>
+			<td align="center">${ purchase.orderDate }</td>
 			<td></td>
 			<td align="left">
 				<c:if test="${ purchase.tranCode  == '002' }">
-					구매완료					
+					구매완료
+					<span value="${ purchase.tranNo }">배송하기</span>					
 				</c:if>
 				<c:if test="${ purchase.tranCode == '003' }">
 					배송중
@@ -84,12 +124,14 @@
 				</c:if>			
 			</td>
 			<td></td>
+			<!-- 
 			<td align="left">
 				<c:if test="${ purchase.tranCode == '002' }">
 					<a href="/purchase/updateTranCode?tranNo=${ purchase.tranNo }&tranCode=003&menu=manage">배송하기</a>
+					배송하기
 				</c:if>
 			</td>
-			<td></td>
+			 -->
 		</tr>	
 		<tr>
 			<td colspan="11" bgcolor="D6D7D6" height="1"></td>

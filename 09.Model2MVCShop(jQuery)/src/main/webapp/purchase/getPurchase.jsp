@@ -52,13 +52,13 @@
 	</tr>
 	<tr>
 		<td width="104" class="ct_write">
-			물품번호 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+			구매상품 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="105">${ purchase.purchaseProd.prodNo }</td>
+					<td width="105">${ purchase.purchaseProd.prodName }</td>
 					<td></td>
 				</tr>
 			</table>

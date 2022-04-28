@@ -55,7 +55,6 @@
 	<update	id="updatePurchase"	parameterType="purchase" >
 	   	UPDATE transaction
 	   	<set>
-	   		payment_option 	= #{paymentOption:CHAR},
 			receiver_name	= #{receiverName:VARCHAR},
 			receiver_phone	= #{receiverPhone:VARCHAR},
 			dlvy_addr		= #{dlvyAddr:VARCHAR},
@@ -78,12 +77,13 @@
 	<select  id="getPurchaseList"  parameterType="map"	resultMap="purchaseSelectMap">
 	  	SELECT *
 	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
-	  			FROM		(	SELECT tran_no, receiver_name, receiver_phone, tran_status_code 
-								FROM transaction
+	  			FROM		(	SELECT t.tran_no, t.receiver_name, t.tran_status_code, t.order_date, p.prod_name, p.prod_no 
+								FROM transaction t, product p
 								<where>
+									p.prod_no = t.prod_no(+)
 									<if test="searchCondition != null">
 										<if test="searchKeyword != null or searchKeyword !='' ">
-							 				buyer_id = #{searchKeyword}
+							 				AND buyer_id = #{searchKeyword}
 										</if>												
 									</if>
 								</where>

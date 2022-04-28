@@ -19,6 +19,39 @@
 	
 	$(function(){
 		
+		$(".ct_list_pop td:nth-child(1)")
+		.hover(
+				function(){
+					$(this).css({
+						"color": "skyblue",
+						"font-weight": "bolder"
+					});
+				},
+				function(){
+					$(this).css({
+						"color": "",
+						"font-weight": ""
+					});
+				}
+		)
+		.click(function(){
+			// /purchase/getPurchase?tranNo=${ purchase.tranNo }
+			console.log("주문번호 클릭 : " + $(this).text().trim());
+			self.location = "/purchase/getPurchase?tranNo=" + $(this).text().trim();
+		});
+		
+		$(".ct_list_pop td:nth-child(3)").click(function(){
+			// /product/getProduct?prodNo=${ purchase.purchaseProd.prodNo }			
+			console.log("상품번호 클릭 : " + $(this).attr("value"));
+			self.location = "/product/getProduct?prodNo=" + $(this).attr("value");
+		});
+		
+		$(".ct_list_pop td:nth-child(11):contains('물건도착')").click(function(){
+			// /purchase/updateTranCode?tranNo=${  purchase.tranNo }&tranCode=004	
+			console.log("물건도착 클릭 : " + $(this).attr("value"));
+			self.location = "/purchase/updateTranCode?tranNo=" + $(this).attr("value") + "&tranCode=004";
+		});
+		
 	});
 	
 </script>
@@ -50,17 +83,16 @@
 		<td colspan="11">전체 ${ resultPage.totalCount } 건수, 현재 ${ resultPage.currentPage } 페이지</td>
 	</tr>
 	<tr>
-		<td class="ct_list_b" width="100">No</td>
+		<td class="ct_list_b" width="100">주문번호</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">회원ID</td>
+		<td class="ct_list_b" width="150">구매상품</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">회원명</td>
+		<td class="ct_list_b" width="150">구매자</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b">전화번호</td>
+		<td class="ct_list_b" width="150">주문일</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b">배송현황</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b">정보수정</td>
 	</tr>
 	<tr>
 		<td colspan="11" bgcolor="808285" height="1"></td>
@@ -71,16 +103,17 @@
 		<c:set var="i" value="${ i+1 }" />	
 		<tr class="ct_list_pop">
 			<td align="center">
-				<a href="/purchase/getPurchase?tranNo=${ purchase.tranNo }">${ i }</a>
+				${ purchase.tranNo }
 			</td>
 			<td></td>
-			<td align="left">
-				<a href="/user/getUser?userId=${ user.userId }">${ user.userId }</a>
+			<td align="left" value="${ purchase.purchaseProd.prodNo }">
+				<!--  <a href="/product/getProduct?prodNo=${ purchase.purchaseProd.prodNo }">${ purchase.purchaseProd.prodName }</a> -->
+				${ purchase.purchaseProd.prodName }
 			</td>
 			<td></td>
-			<td align="left">${ user.userName }</td>
+			<td align="left">${ purchase.receiverName }</td>
 			<td></td>
-			<td align="left">${ user.phone }</td>
+			<td align="left">${ purchase.orderDate }</td>
 			<td></td>
 			<td align="left">현재
 				<c:if test="${ purchase.tranCode  == '002' }">
@@ -88,15 +121,21 @@
 				</c:if>
 				<c:if test="${ purchase.tranCode == '003' }">
 					배송중
+					<c:if test="${ purchase.tranCode == '003' }">
+					<!-- <a href="/purchase/updateTranCode?tranNo=${  purchase.tranNo }&tranCode=004">물건도착</a>  -->
+					물건도착
+				</c:if>
 				</c:if>
 				<c:if test="${ purchase.tranCode  ==  '004' }">
 					배송완료
 				</c:if>			
-					상태 입니다.</td>
+					상태 입니다.
+			</td>
 			<td></td>
-			<td align="left">
+			<td align="left" value="${  purchase.tranNo }">
 				<c:if test="${ purchase.tranCode == '003' }">
-					<a href="/purchase/updateTranCode?tranNo=${  purchase.tranNo }&tranCode=004">물건도착</a>
+					<!-- <a href="/purchase/updateTranCode?tranNo=${  purchase.tranNo }&tranCode=004">물건도착</a>  -->
+					물건도착
 				</c:if>
 			</td>
 		</tr>	

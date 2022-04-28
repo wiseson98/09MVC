@@ -7,17 +7,26 @@
 <title>구매 영수증</title>
 </head>
 
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-<!--
+
 function fncGoListPurchase() {
-	document.viewPurchase.submit();
+	$("form[name='viewPurchase']").attr("method", "POST").attr("action", "/purchase/listPurchase").submit();
 }
--->
+
+$(function(){
+	
+	$("td.ct_btn01:contains('목록')").click(function(){
+		fncGoListPurchase();
+	});
+	
+});
+
 </script>
 
 <body>
 
-<form name="viewPurchase" action="/purchase/listPurchase" method="post">
+<form name="viewPurchase">
 
 다음과 같이 구매가 되었습니다.
 
@@ -72,7 +81,8 @@ function fncGoListPurchase() {
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="javascript:fncGoListPurchase();">목록</a>
+						<!-- <a href="javascript:fncGoListPurchase();">목록</a> -->
+						목록
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
@@ -81,12 +91,15 @@ function fncGoListPurchase() {
 					<td width="17" height="23">
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
+					<!--  
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
 						<a href="javascript:history.go(-1)">취소</a>
+						취소
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
 					</td>
+					-->
 				</tr>
 			</table>
 		</td>
